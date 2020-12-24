@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eece0c031a3549847b9c16d898a4ae0a, type: 3}
-  m_Name: Screen Height
+  m_Script: {fileID: 11500000, guid: 460e3e4225cc472589ebf4417bb77e5b, type: 3}
+  m_Name: CameraVariable
   m_EditorClassIdentifier: 
-  _value: 19.2
+  _value: {fileID: 0}
   _keepValue: 1
+  _fallbackType: 1

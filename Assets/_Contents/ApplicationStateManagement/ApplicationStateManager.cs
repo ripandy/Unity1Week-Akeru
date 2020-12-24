@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
+using Pyra.Utilities;
 using Pyra.VariableSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -36,7 +37,7 @@ namespace Pyra.ApplicationStateManagement
         private void Start()
         {
             var token = this.GetCancellationTokenOnDestroy();
-            _applicationState.ForEachAwaitWithCancellationAsync(async (value, ct) => await OnApplicationStateChanged(value, ct), token).Forget();
+            _applicationState.WithoutCurrent().SubscribeAwait(async (value, ct) => await OnApplicationStateChanged(value, ct), token);
         }
 
         private async UniTask OnApplicationStateChanged(ApplicationStateEnum newApplicationState, CancellationToken token)
@@ -47,9 +48,12 @@ namespace Pyra.ApplicationStateManagement
             // reset progress
             _loadingProgress.Value = 0;
 
+            this.Yellow($"Application State: {_applicationState}");
+            
             // unload/load scenes
             await UnloadPreviousState(token);
             await LoadCurrentState(token);
+            SetActiveScene();
 
             await UniTask.NextFrame(cancellationToken: token);
 
@@ -63,8 +67,6 @@ namespace Pyra.ApplicationStateManagement
 
             // wait for load buffer time
             await ProcessOffset(token);
-
-            SetActiveScene();
 
             PrevState = _cachedConfigs[newApplicationState];
         }
