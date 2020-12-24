@@ -415,16 +415,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8cb9138c7a141a7a3b0156b94fa03ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyEvents:
+  _inputActionAsset: {fileID: -944628639613478452, guid: 9af9f724bfb64a1585f37c92204f9d45,
+    type: 3}
+  _eventsToBind:
   - eventToFire: {fileID: 11400000, guid: 0a55a2b2b08fb45a9b4bb39ae1a77f9a, type: 2}
-    registeredInput:
-    - inputType: 1
-      unityInput:
-        inputType: 0
-        identifier: Fire1
-        buttonEventType: 0
-        eventFireTreshold: 0.8
-      keyInput:
-        key: 0
-        combinationKey: 0
-        buttonEventType: 0
+    actionName: Click
+    eventInputType: 2
+  _bindEnable: 0

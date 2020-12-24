@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eece0c031a3549847b9c16d898a4ae0a, type: 3}
   m_Name: Screen Width
   m_EditorClassIdentifier: 
-  property:
-    initialValue: 10.8
-  skipValueOnSubscribe: 0
+  _value: 10.8
+  _keepValue: 1

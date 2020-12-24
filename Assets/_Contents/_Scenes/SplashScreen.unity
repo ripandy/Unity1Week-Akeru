@@ -134,7 +134,6 @@ GameObject:
   - component: {fileID: 10805504}
   - component: {fileID: 10805503}
   - component: {fileID: 10805502}
-  - component: {fileID: 10805501}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -142,23 +141,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &10805501
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 10805500}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6b1170b351449f49c3800bdfd2562a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeableComponentType: 0
-  spriteRenderer: {fileID: 0}
-  tmpReference: {fileID: 0}
-  materialReference: {fileID: 0}
-  defaultFadeDuration: 2
 --- !u!114 &10805502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,9 +286,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56ec83e33f30846d38844f24174db9a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeables:
-  - {fileID: 10805501}
   applicationState: {fileID: 11400000, guid: e8bf0f22ba219430f887682575e75599, type: 2}
+  _splashText: {fileID: 10805502}
+  _splashImage: {fileID: 0}
+  _splashSprite: {fileID: 0}
 --- !u!4 &310483489
 Transform:
   m_ObjectHideFlags: 0

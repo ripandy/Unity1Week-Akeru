@@ -14,6 +14,15 @@
       "dependencies": {},
       "url": "https://package.openupm.com"
     },
+    "com.ripandyadha.pyra": {
+      "version": "https://github.com/ripandy/Pyra.git?path=Assets/Pyra",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.cysharp.unitask": "2.0.37"
+      },
+      "hash": "0a69cb0605104f149fd9916894065f17f1788803"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
