@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eece0c031a3549847b9c16d898a4ae0a, type: 3}
-  m_Name: Screen Width
+  m_Script: {fileID: 11500000, guid: 845cc58663548624cae1a4d0d89ce7cb, type: 3}
+  m_Name: MoveAxisEvent
   m_EditorClassIdentifier: 
-  _value: 19.2
-  _keepValue: 0
+  cached: 0
