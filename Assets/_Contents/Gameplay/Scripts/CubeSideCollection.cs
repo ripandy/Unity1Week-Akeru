@@ -21,6 +21,7 @@ namespace _Contents.Gameplay.Scripts
         public CubeSide onFloor = CubeSide.Down;
 
         public bool IsIntact(CubeSide cubeSide) => this[cubeSide] < 0;
+        public bool IsCompleted => !ContainsValue(-1);
         
         public void ResetSides()
         {

@@ -4,7 +4,6 @@ using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using DG.Tweening;
 using Pyra.EventSystem;
-using Pyra.Utilities;
 using Pyra.VariableSystem;
 using UnityEngine;
 
@@ -117,7 +116,6 @@ namespace _Contents.Gameplay.Scripts
         private bool GetBottom(Transform cubeBase, out CubeSide onFloor)
         {
             var bottom = Vector3.up * -1;
-            bottom.Yellow($"comparing.. front: {cubeBase.forward}, back: {cubeBase.forward * -1}, up: {cubeBase.up}, down: {cubeBase.up * -1}, right: {cubeBase.right}, left: {cubeBase.right * -1}");
             if (bottom == cubeBase.forward)
                 onFloor = CubeSide.Front;
             else if (bottom == cubeBase.forward * -1)

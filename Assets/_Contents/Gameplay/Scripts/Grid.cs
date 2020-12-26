@@ -9,7 +9,8 @@ namespace _Contents.Gameplay.Scripts
     {
         None = -1,
         Empty,
-        Fill
+        Fresh,
+        Filled
     }
 
     public struct Point
@@ -27,8 +28,10 @@ namespace _Contents.Gameplay.Scripts
     [CreateAssetMenu(fileName = "NewGrid", menuName = MenuHelper.DefaultCollectionMenu + "Grid")]
     public class Grid : Collection<GridState>
     {
-        public int width;
-        public int height;
+        public int width = 10;
+        public int height = 10;
+
+        public int dropPoint = 55;
 
         public GridState this[int x, int y] => this[y * width + x];
 

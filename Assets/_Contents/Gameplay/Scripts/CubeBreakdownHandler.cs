@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
+using Pyra.EventSystem;
 using Pyra.VariableSystem;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace _Contents.Gameplay.Scripts
     {
         [SerializeField] private CubeSideCollection _activeCube;
         [SerializeField] private IntVariable _cubeIndex;
-        [SerializeField] private Transform _cubeBase;
+        [SerializeField] private GameEvent _cubeCompleted;
         [SerializeField] private List<GameObject> _cubeSides;
 
         private void Awake() => ResetCube();
@@ -18,7 +19,12 @@ namespace _Contents.Gameplay.Scripts
         private void Start()
         {
             var token = this.GetCancellationTokenOnDestroy();
+            
             _cubeIndex.Subscribe(OpenBottom, token);
+            
+            UniTaskAsyncEnumerable.EveryValueChanged(_activeCube, collection => collection.IsCompleted)
+                .Where(completed => completed)
+                .Subscribe(_ => _cubeCompleted.Raise(), token);
         }
 
         private void OpenBottom(int index)
