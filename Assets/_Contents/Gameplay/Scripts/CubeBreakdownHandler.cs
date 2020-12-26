@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
-using Pyra.EventSystem;
 using Pyra.VariableSystem;
 using UnityEngine;
 
@@ -9,22 +8,26 @@ namespace _Contents.Gameplay.Scripts
 {
     public class CubeBreakdownHandler : MonoBehaviour
     {
+        [SerializeField] private GameplayStateVariable _gameplayState;
         [SerializeField] private CubeSideCollection _activeCube;
         [SerializeField] private IntVariable _cubeIndex;
-        [SerializeField] private GameEvent _cubeCompleted;
         [SerializeField] private List<GameObject> _cubeSides;
 
-        private void Awake() => ResetCube();
+        private void OnEnable()
+        {
+            ResetCube();
+            OpenBottom(_cubeIndex);
+        }
 
         private void Start()
         {
             var token = this.GetCancellationTokenOnDestroy();
             
-            _cubeIndex.Subscribe(OpenBottom, token);
+            _cubeIndex.WithoutCurrent().Subscribe(OpenBottom, token);
             
             UniTaskAsyncEnumerable.EveryValueChanged(_activeCube, collection => collection.IsCompleted)
                 .Where(completed => completed)
-                .Subscribe(_ => _cubeCompleted.Raise(), token);
+                .Subscribe(_ => OnCubeCompleted(), token);
         }
 
         private void OpenBottom(int index)
@@ -42,6 +45,12 @@ namespace _Contents.Gameplay.Scripts
             {
                 side.SetActive(true);
             }
+        }
+
+        private void OnCubeCompleted()
+        {
+            gameObject.SetActive(false);
+            _gameplayState.Value = GameplayStateEnum.CubeComplete;
         }
     }
 }

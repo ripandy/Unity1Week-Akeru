@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: CubeIndex
   m_EditorClassIdentifier: 
   _value: 55
-  _keepValue: 0
+  _keepValue: 1

@@ -3,6 +3,7 @@ using DG.Tweening;
 using Pyra.ApplicationStateManagement;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Pyra.LoadingScreen
@@ -27,6 +28,8 @@ namespace Pyra.LoadingScreen
                 .ToUniTask(cancellationToken: token);
             
             applicationState.Value = ApplicationStateEnum.MainMenu;
+            
+            SceneManager.UnloadSceneAsync(SceneNamesEnumCore.SplashScreen.ToString());
         }
     }
 }

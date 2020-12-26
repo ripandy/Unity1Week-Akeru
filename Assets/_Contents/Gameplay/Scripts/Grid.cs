@@ -1,3 +1,4 @@
+using System.Linq;
 using Pyra;
 using Pyra.Collection;
 using Pyra.Utilities;
@@ -37,35 +38,48 @@ namespace _Contents.Gameplay.Scripts
 
         public void Initialize()
         {
-            Clear();
-            for (var i = 0; i < height; i++)
+            var filename = "Default.json";
+            LoadFromJson(filename);
+            
+            for (var j = 0; j < height; j++)
             {
-                for (var j = 0; j < width; j++)
+                for (var i = 0; i < width; i++)
                 {
-                    Add(GridState.Empty);
+                    var idx = ToIndex(i, j);
+                    if (Count <= idx)
+                        Add(GridState.Empty);
+                    if (this[idx] != GridState.None)
+                        this[idx] = GridState.Empty;
                 }
             }
+            
+            SaveToJson(filename);
         }
         
         public Point ToGrid(int index) => new Point(index % width, Mathf.FloorToInt((float) index / width));
         public int ToIndex(int x, int y) => y * width + x;
         public int ToIndex(Point point) => ToIndex(point.x, point.y);
-        
-        protected virtual string BasePath => Application.dataPath;
-        protected virtual string JsonFilename => name + ".json";
-        public bool JsonFileExist => ExternalJsonHandler.IsJsonExist(BasePath, JsonFilename);
-        
-        public virtual void SaveToJson()
+
+        public bool Completed => this.All(state => state != GridState.Empty);
+
+        private string BasePath => Application.dataPath;
+        private string JsonFilename => name + ".json";
+
+        public void SaveToJson(string jsonFilename)
         {
-            ExternalJsonHandler.SaveToJson(this, BasePath, JsonFilename);
+            ExternalJsonHandler.SaveToJson(this, BasePath, jsonFilename);
         }
 
-        public virtual void LoadFromJson()
+        public void SaveToJson() => SaveToJson(JsonFilename);
+        
+        public void LoadFromJson(string jsonFilename)
         {
-            if (JsonFileExist)
-                ExternalJsonHandler.LoadFromJson(this, BasePath, JsonFilename);
+            if (ExternalJsonHandler.IsJsonExist(BasePath, jsonFilename))
+                ExternalJsonHandler.LoadFromJson(this, BasePath, jsonFilename);
             else
                 SaveToJson();
         }
+
+        public void LoadFromJson() => LoadFromJson(JsonFilename);
     }
 }

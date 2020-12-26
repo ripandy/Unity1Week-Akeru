@@ -29,10 +29,20 @@ namespace _Contents.Gameplay.Scripts
         private const float RollHeight = 0.25f;
         private const float RollDegree = 90f;
 
+        private void OnEnable() => InitializePosition(_cubeIndex);
+
         private void Start()
         {
             var token = this.GetCancellationTokenOnDestroy();
             _moveAxisEvent.Where(ShouldMove).SubscribeAwait(MoveCube, token);
+        }
+        
+        private void InitializePosition(int index)
+        {
+            var grid = _grid.ToGrid(index);
+            transform.position = new Vector3(grid.y, 0.5f, grid.x);
+            _cubeContainer.rotation = Quaternion.identity;
+            _cubeBase.rotation = Quaternion.identity;
         }
 
         private bool ShouldMove(Vector2 axis) => Mathf.Abs(axis.x) > MoveTreshold || Mathf.Abs(axis.y) > MoveTreshold;
@@ -65,6 +75,7 @@ namespace _Contents.Gameplay.Scripts
                 
             var isValid = cubeGrid.x >= 0 && cubeGrid.x < _grid.width 
                           && cubeGrid.y >= 0 && cubeGrid.y < _grid.height
+                          && (_grid[predictedIndex] == GridState.Empty || _grid[predictedIndex] == GridState.Fresh)
                           && simulated;
             
             if (!isValid)
@@ -103,7 +114,7 @@ namespace _Contents.Gameplay.Scripts
             if (GetBottom(_cubeSimulationBase, out var onFloor))
             {
                 if (_activeCube.IsIntact(onFloor)
-                    || _activeCube.Any(pair => pair.Value == predictedIndex) )
+                    || _activeCube.Any(pair => pair.Value == predictedIndex))
                 {
                     _activeCube.onFloor = onFloor;
                     return true;
