@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
-using Pyra.Utilities;
 using Pyra.VariableSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -48,8 +47,6 @@ namespace Pyra.ApplicationStateManagement
             // reset progress
             _loadingProgress.Value = 0;
 
-            this.Yellow($"Application State: {_applicationState}");
-            
             // unload/load scenes
             await UnloadPreviousState(token);
             await LoadCurrentState(token);
