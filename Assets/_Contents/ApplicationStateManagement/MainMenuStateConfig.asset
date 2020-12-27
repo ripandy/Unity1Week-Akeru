@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MainMenuStateConfig
   m_EditorClassIdentifier: 
   applicationState: 1
-  scenes: 00000000
-  scenesToKeep: 00000000
-  activeScene: 0
-  loadBufferTime: 1
+  scenes: 0100000000000000
+  scenesToKeep: 0100000000000000
+  activeScene: 1
+  loadBufferTime: 0.2

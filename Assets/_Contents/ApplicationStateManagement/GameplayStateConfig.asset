@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   applicationState: 2
   scenes: 010000000300000004000000
-  scenesToKeep: 
+  scenesToKeep: 01000000
   activeScene: 1
-  loadBufferTime: 1
+  loadBufferTime: 0.2

@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Pyra.Utilities;
 using UnityEngine;
 
 namespace _Contents.Gameplay.Scripts
@@ -19,7 +18,6 @@ namespace _Contents.Gameplay.Scripts
             if (_activeGrid.Completed)
             {
                 _gameplayState.Value = GameplayStateEnum.Win;
-                _gameplayState.Value.Green("You Win!!");
                 return;
             }
 

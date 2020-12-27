@@ -48,6 +48,6 @@ MonoBehaviour:
   _cubeIndex: {fileID: 11400000, guid: b9fca4c05b30547bab65a6b3691db4ba, type: 2}
   _fillPrefab: {fileID: 1983759043336193346, guid: 01cc04161fae647a5a97adb36d521bd2,
     type: 3}
-  _emptyMaterial: {fileID: 2100000, guid: bde75ac2ed9ef4f32a0aa6e5307d6b36, type: 2}
+  _emptyMaterial: {fileID: 2100000, guid: a52029567cdf1420690bd7a799f5dc72, type: 2}
   _freshMaterial: {fileID: 2100000, guid: 12e6e1269602041ebbf147259df317f4, type: 2}
   _fillMaterial: {fileID: 2100000, guid: 1b4e03c22f3994a039227acdcaed5314, type: 2}

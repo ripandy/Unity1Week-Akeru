@@ -44,7 +44,7 @@ namespace _Contents.Gameplay.Scripts
             _moveAxisEvent.Where(ShouldMove).Subscribe(MoveCube, token);
             
             _dropEvent.AsUniTaskAsyncEnumerable()
-                .Where(_ => _droppable)
+                .Where(_ => _gameplayState.Value == GameplayStateEnum.Drop && _droppable)
                 .SubscribeAwait(async _ => await AnimateDrop(token), token);
             
             _droppable.Subscribe(droppable =>

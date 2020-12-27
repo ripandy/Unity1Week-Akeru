@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeb646de84aa4644ca07a6dfb17e8405, type: 3}
   m_Name: CubeIndex
   m_EditorClassIdentifier: 
-  _value: 55
+  _value: 0
   _keepValue: 1

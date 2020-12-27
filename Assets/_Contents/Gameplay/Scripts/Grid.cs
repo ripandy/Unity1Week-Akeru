@@ -34,13 +34,18 @@ namespace _Contents.Gameplay.Scripts
 
         public int dropPoint = 55;
 
+        public string title; 
+
         public GridState this[int x, int y] => this[y * width + x];
+
+        public void Initialize(string filename)
+        {
+            LoadFromJson(filename);
+            Initialize();
+        }
 
         public void Initialize()
         {
-            var filename = "Default.json";
-            LoadFromJson(filename);
-            
             for (var j = 0; j < height; j++)
             {
                 for (var i = 0; i < width; i++)
@@ -52,8 +57,6 @@ namespace _Contents.Gameplay.Scripts
                         this[idx] = GridState.Empty;
                 }
             }
-            
-            SaveToJson(filename);
         }
         
         public Point ToGrid(int index) => new Point(index % width, Mathf.FloorToInt((float) index / width));
@@ -62,7 +65,12 @@ namespace _Contents.Gameplay.Scripts
 
         public bool Completed => this.All(state => state != GridState.Empty);
 
+        #if UNITY_EDITOR
         private string BasePath => Application.dataPath;
+        #else
+        private string BasePath => Application.persistentDataPath;
+        #endif
+        
         private string JsonFilename => name + ".json";
 
         public void SaveToJson(string jsonFilename)

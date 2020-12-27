@@ -5,6 +5,7 @@ namespace _Contents.Gameplay.Scripts
 {
     public enum GameplayStateEnum
     {
+        Setup,
         Drop,
         Fill,
         CubeComplete,

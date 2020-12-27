@@ -46,6 +46,7 @@ MonoBehaviour:
   _gameplayState: {fileID: 11400000, guid: 7274bf33f400d421eacb9f06d2ad93bd, type: 2}
   _activeGrid: {fileID: 11400000, guid: 49cf40b3a2cdc4ed48a79b0a4aed127a, type: 2}
   _cubeIndex: {fileID: 11400000, guid: b9fca4c05b30547bab65a6b3691db4ba, type: 2}
+  _levelName: {fileID: 11400000, guid: c010be0620d494d9584630aaa2c0414e, type: 2}
   _statesToHandle:
   - state: 0
     gameObjects:

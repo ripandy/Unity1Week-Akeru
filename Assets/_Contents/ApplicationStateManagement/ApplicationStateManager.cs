@@ -13,6 +13,9 @@ namespace Pyra.ApplicationStateManagement
     public class ApplicationStateManager : MonoBehaviour
     {
         [SerializeField] private FloatVariable _loadingProgress;
+        [SerializeField] private FloatVariable _fadeDuration;
+        [SerializeField] private BoolVariable _isLoading;
+        [SerializeField] private BoolVariable _shouldFade;
         [SerializeField] private ApplicationStateVariable _applicationState;
         [SerializeField] private List<ApplicationStateConfig> _stateConfigs = new List<ApplicationStateConfig>();
 
@@ -41,11 +44,18 @@ namespace Pyra.ApplicationStateManagement
 
         private async UniTask OnApplicationStateChanged(ApplicationStateEnum newApplicationState, CancellationToken token)
         {
+            if (_isLoading) return;
+
             // necessary to let _applicationState value to be correctly assigned
             await UniTask.NextFrame(cancellationToken: token);
-
-            // reset progress
+            
+            // initialize load
+            _isLoading.Value = true;
             _loadingProgress.Value = 0;
+            
+            // wait for fade
+            if (_shouldFade)
+                await UniTask.Delay(TimeSpan.FromSeconds(_fadeDuration), cancellationToken: token);
 
             // unload/load scenes
             await UnloadPreviousState(token);
@@ -66,6 +76,8 @@ namespace Pyra.ApplicationStateManagement
             await ProcessOffset(token);
 
             PrevState = _cachedConfigs[newApplicationState];
+
+            _isLoading.Value = false;
         }
 
         private IList<SceneNamesEnum> FilterScenesToUnload()

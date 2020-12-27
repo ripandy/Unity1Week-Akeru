@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
-using Pyra.VariableSystem;
+using Pyra.Utilities;
 using UnityEngine;
 
 namespace _Contents.Gameplay.Scripts
@@ -10,19 +10,7 @@ namespace _Contents.Gameplay.Scripts
     public class GameplayStateHandler : MonoBehaviour
     {
         [SerializeField] private GameplayStateVariable _gameplayState;
-
-        [Header("Initialization")]
-        [SerializeField] private Grid _activeGrid;
-        [SerializeField] private IntVariable _cubeIndex;
-        
-        [Header("State Handling")]
         [SerializeField] private List<ActiveStateObject> _statesToHandle;
-
-        private void Awake()
-        {
-            _activeGrid.Initialize();
-            _cubeIndex.Value = _activeGrid.dropPoint;
-        }
 
         private void Start()
         {
