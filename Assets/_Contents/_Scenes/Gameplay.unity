@@ -534,6 +534,11 @@ PrefabInstance:
       propertyPath: _cubeSimulationBase
       value: 
       objectReference: {fileID: 2064414310}
+    - target: {fileID: 1134354352, guid: 2138322f1bfb942c588ee5b6fdae1059, type: 3}
+      propertyPath: _gameplayState
+      value: 
+      objectReference: {fileID: 11400000, guid: 7274bf33f400d421eacb9f06d2ad93bd,
+        type: 2}
     - target: {fileID: 6880531924099077570, guid: 2138322f1bfb942c588ee5b6fdae1059,
         type: 3}
       propertyPath: m_Name

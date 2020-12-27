@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using DG.Tweening;
 using Pyra.EventSystem;
+using Pyra.Utilities;
 using Pyra.VariableSystem;
 using UnityEngine;
 
@@ -11,6 +13,7 @@ namespace _Contents.Gameplay.Scripts
 {
     public class CubeMoveHandler : MonoBehaviour
     {
+        [SerializeField] private GameplayStateVariable _gameplayState;
         [SerializeField] private Grid _grid;
         [SerializeField] private IntVariable _cubeIndex;
         [SerializeField] private CubeSideCollection _activeCube;
@@ -28,6 +31,9 @@ namespace _Contents.Gameplay.Scripts
         private const float AnimationDuration = 0.5f;
         private const float RollHeight = 0.25f;
         private const float RollDegree = 90f;
+
+        private int _availableMove;
+        private readonly List<int> _moveCheck = new List<int>();
 
         private void OnEnable() => InitializePosition(_cubeIndex);
 
@@ -49,8 +55,8 @@ namespace _Contents.Gameplay.Scripts
 
         private async UniTask MoveCube(Vector2 axis, CancellationToken token)
         {
-            var x = 0f;
-            var y = 0f;
+            var x = 0;
+            var y = 0;
             if (Mathf.Abs(axis.x) > MoveTreshold)
                 x = axis.x > 0 ? 1 : -1;
             else
@@ -67,11 +73,11 @@ namespace _Contents.Gameplay.Scripts
                 rotateTo.z = RollDegree * (_xVertical ? y : x);
 
             var cubeGrid = _grid.ToGrid(_cubeIndex);
-                cubeGrid.x += (int) x;
-                cubeGrid.y -= (int) y; 
+                cubeGrid.x += x;
+                cubeGrid.y -= y; 
             var predictedIndex = _grid.ToIndex(cubeGrid);
 
-            var simulated = SimulateMove(moveTo, rotateTo, predictedIndex);
+            var simulated = SimulateMove(moveTo, rotateTo, predictedIndex, out var onFloor);
                 
             var isValid = cubeGrid.x >= 0 && cubeGrid.x < _grid.width 
                           && cubeGrid.y >= 0 && cubeGrid.y < _grid.height
@@ -83,7 +89,16 @@ namespace _Contents.Gameplay.Scripts
 
             await AnimateMove(moveTo, rotateTo, token);
 
+            _activeCube.onFloor = onFloor;
             _cubeIndex.Value = predictedIndex;
+
+            await UniTask.NextFrame(cancellationToken: token);
+            
+            _moveCheck.Clear();
+            _availableMove = CheckAvailableMoves(_cubeIndex.Value, _moveCheck, _cubeBase.localRotation);
+            _availableMove.Red();
+            if (_availableMove == 0 && !_activeCube.IsCompleted)
+                _gameplayState.Value = GameplayStateEnum.Lose;
         }
 
         private async UniTask AnimateMove(Vector3 moveTo, Vector3 rotateTo, CancellationToken cancellationToken)
@@ -100,7 +115,7 @@ namespace _Contents.Gameplay.Scripts
             _cubeBase.SetParent(_cubeContainer, true);
         }
 
-        private bool SimulateMove(Vector3 moveTo, Vector3 rotateTo, int predictedIndex)
+        private bool SimulateMove(Vector3 moveTo, Vector3 rotateTo, int predictedIndex, out CubeSide onFloor)
         {
             _cubeSimulationBase.localRotation = _cubeBase.localRotation;
             
@@ -111,14 +126,31 @@ namespace _Contents.Gameplay.Scripts
             _cubeSimulationContainer.rotation = Quaternion.identity;
             _cubeSimulationBase.SetParent(_cubeSimulationContainer, true);
 
-            if (GetBottom(_cubeSimulationBase, out var onFloor))
+            if (GetBottom(_cubeSimulationBase, out onFloor))
             {
                 if (_activeCube.IsIntact(onFloor)
                     || _activeCube.Any(pair => pair.Value == predictedIndex))
-                {
-                    _activeCube.onFloor = onFloor;
                     return true;
-                }
+            }
+
+            return false;
+        }
+        
+        private bool SimulateNonBacktrackMove(Vector3 moveTo, Vector3 rotateTo, Quaternion startingRotation)
+        {
+            _cubeSimulationBase.localRotation = startingRotation;
+            
+            _cubeSimulationContainer.position = moveTo;
+            _cubeSimulationContainer.Rotate(rotateTo);
+            
+            _cubeSimulationBase.SetParent(null, true);
+            _cubeSimulationContainer.rotation = Quaternion.identity;
+            _cubeSimulationBase.SetParent(_cubeSimulationContainer, true);
+
+            if (GetBottom(_cubeSimulationBase, out var onFloor))
+            {
+                if (_activeCube.IsIntact(onFloor))
+                    return true;
             }
 
             return false;
@@ -145,6 +177,62 @@ namespace _Contents.Gameplay.Scripts
                 return false;
             }
             return true;
+        }
+
+        private int CheckAvailableMoves(int index, List<int> checkedIndex, Quaternion startingRotation)
+        {
+            index.Orange("Checking move..");
+            
+            var availableMove = 0;
+            for (var j = -1; j <= 1; j++)
+            {
+                for (var i = -1; i <= 1; i++)
+                {
+                    if (i == 0 && j != 0 || i != 0 && j == 0)
+                    {
+                        var cubeGrid = _grid.ToGrid(index);
+                        cubeGrid.x += i;
+                        cubeGrid.y -= j; 
+                        var predictedIndex = _grid.ToIndex(cubeGrid);
+                        
+                        if (checkedIndex.Contains(predictedIndex))
+                        {
+                            predictedIndex.Cyan("Have been checked.. skipping..");
+                            continue;
+                        }
+                        
+                        var distance = Vector3.zero;
+                            distance.x = i;
+                            distance.z = j;
+
+                        var moveTo = _cubeContainer.position + distance;
+
+                        var rotateTo = Vector3.zero;
+                            rotateTo.x = RollDegree * i;
+                            rotateTo.z = RollDegree * j;
+
+                        var simulated = SimulateNonBacktrackMove(moveTo, rotateTo, startingRotation);
+                        
+                        var isValid = cubeGrid.x >= 0 && cubeGrid.x < _grid.width
+                                      && cubeGrid.y >= 0 && cubeGrid.y < _grid.height
+                                      && _grid[predictedIndex] == GridState.Empty
+                                      && simulated;
+
+                        if (isValid)
+                            availableMove++;
+                        
+                        checkedIndex.Add(index);
+
+                        if (_grid[predictedIndex] == GridState.Fresh)
+                        {
+                            predictedIndex.Cyan($"Attempting recursive check.. Current available move: {availableMove}");
+                            availableMove += CheckAvailableMoves(predictedIndex, checkedIndex, _cubeSimulationBase.localRotation);
+                        }
+                    }
+                }
+            }
+
+            return availableMove;
         }
     }
 }

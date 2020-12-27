@@ -40,7 +40,9 @@ namespace _Contents.Gameplay.Scripts
 
         public void Initialize(string filename)
         {
-            LoadFromJson(filename);
+            var filePath = "LevelData/" + filename;
+            var targetFile = Resources.Load<TextAsset>(filePath);
+            JsonUtility.FromJsonOverwrite(targetFile.text, this);
             Initialize();
         }
 

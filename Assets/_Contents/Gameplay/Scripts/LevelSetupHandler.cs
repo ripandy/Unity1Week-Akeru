@@ -6,6 +6,7 @@ namespace _Contents.Gameplay.Scripts
 {
     public class LevelSetupHandler : MonoBehaviour
     {
+        [SerializeField] private GameplayStateVariable _gameplayState;
         [SerializeField] private Grid _activeGrid;
         [SerializeField] private IntVariable _cubeIndex;
         [SerializeField] private IntVariable _activeLevel;
@@ -14,9 +15,14 @@ namespace _Contents.Gameplay.Scripts
 
         private void Awake()
         {
-            _activeGrid.Initialize($"{_levelList[_activeLevel]}.json");
+            _activeGrid.Initialize($"{_levelList[_activeLevel]}");
             _cubeIndex.Value = _activeGrid.dropPoint;
             _levelName.Value = _activeGrid.title;
+        }
+
+        private void Start()
+        {
+            _gameplayState.Value = GameplayStateEnum.Setup;
         }
     }
 }

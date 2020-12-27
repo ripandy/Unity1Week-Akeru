@@ -56,7 +56,7 @@ namespace _Contents.Gameplay.Scripts
 
         private void LoadCurrentLevel()
         {
-            _gameplayState.Value = GameplayStateEnum.Setup;
+            _gameplayState.Value = GameplayStateEnum.Reload;
             _applicationState.Value = ApplicationStateEnum.GamePlay;
         }
 
