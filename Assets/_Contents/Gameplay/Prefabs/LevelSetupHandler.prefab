@@ -43,6 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 047dd9ddf33646e09a66b8ee5cfdfcd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameplayState: {fileID: 11400000, guid: 7274bf33f400d421eacb9f06d2ad93bd, type: 2}
   _activeGrid: {fileID: 11400000, guid: 49cf40b3a2cdc4ed48a79b0a4aed127a, type: 2}
   _cubeIndex: {fileID: 11400000, guid: b9fca4c05b30547bab65a6b3691db4ba, type: 2}
   _activeLevel: {fileID: 11400000, guid: 6e40b31a0ffce4f40864fe45f30da12d, type: 2}
