@@ -1,4 +1,6 @@
 using Cysharp.Threading.Tasks;
+using Pyra.Collection;
+using Pyra.VariableSystem;
 using UnityEngine;
 
 namespace _Contents.Gameplay.Scripts
@@ -7,6 +9,8 @@ namespace _Contents.Gameplay.Scripts
     {
         [SerializeField] private GameplayStateVariable _gameplayState;
         [SerializeField] private Grid _activeGrid;
+        [SerializeField] private IntVariable _activeLevel;
+        [SerializeField] private StringCollection _levelList;
 
         private void OnEnable() => CheckCondition().Forget();
 
@@ -14,10 +18,10 @@ namespace _Contents.Gameplay.Scripts
         {
             var token = this.GetCancellationTokenOnDestroy();
             await UniTask.NextFrame(cancellationToken: token);
-            
+
             if (_activeGrid.Completed)
             {
-                _gameplayState.Value = GameplayStateEnum.Win;
+                _gameplayState.Value = _activeLevel == _levelList.Count - 1 ? GameplayStateEnum.AllClear : GameplayStateEnum.Win;
                 return;
             }
 

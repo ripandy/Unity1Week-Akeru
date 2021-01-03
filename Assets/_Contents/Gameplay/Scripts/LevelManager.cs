@@ -15,6 +15,7 @@ namespace _Contents.Gameplay.Scripts
         [SerializeField] private GameEvent _actionEvent;
         [SerializeField] private GameEvent _restartLevelEvent;
         [SerializeField] private GameEvent _nextLevelEvent;
+        [SerializeField] private GameEvent _toMainMenuEvent;
         [SerializeField] private IntEvent _setLevelEvent;
 
         private void Start()
@@ -23,7 +24,8 @@ namespace _Contents.Gameplay.Scripts
             WaitForRestartEvent(token).Forget();
             WaitForNextLevelEvent(token).Forget();
             WaitForSetLevelEvent(token).Forget();
-            
+            WaitForMainMenuEvent(token).Forget();
+
             _actionEvent.Subscribe(OnAction, token);
         }
 
@@ -33,6 +35,8 @@ namespace _Contents.Gameplay.Scripts
                 NextLevel();
             else if (_gameplayState.Value == GameplayStateEnum.Lose)
                 LoadCurrentLevel();
+            else if (_gameplayState.Value == GameplayStateEnum.AllClear)
+                BackToMainMenu();
         }
 
         private async UniTaskVoid WaitForRestartEvent(CancellationToken token)
@@ -53,11 +57,23 @@ namespace _Contents.Gameplay.Scripts
             if (!canceled)
                 LoadLevel(level);
         }
+        
+        private async UniTaskVoid WaitForMainMenuEvent(CancellationToken token)
+        {
+            if (!await _toMainMenuEvent.WaitForEvent(token).SuppressCancellationThrow())
+                BackToMainMenu();
+        }
 
         private void LoadCurrentLevel()
         {
             _gameplayState.Value = GameplayStateEnum.Reload;
             _applicationState.Value = ApplicationStateEnum.GamePlay;
+        }
+
+        private void BackToMainMenu()
+        {
+            _gameplayState.Value = GameplayStateEnum.Reload;
+            _applicationState.Value = ApplicationStateEnum.MainMenu;
         }
 
         private void NextLevel() => LoadLevel(_activeLevel.Value + 1);

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Pyra;
 using Pyra.Collection;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace _Contents.Gameplay.Scripts
 
         public bool IsIntact(CubeSide cubeSide) => this[cubeSide] < 0;
         public bool IsCompleted => !ContainsValue(-1);
+        public int IntactCount => this.Count(pair => pair.Value < 0);
         
         public void ResetSides()
         {

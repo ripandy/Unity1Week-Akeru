@@ -11,7 +11,8 @@ namespace _Contents.Gameplay.Scripts
         CubeComplete,
         Win,
         Lose,
-        Reload
+        Reload,
+        AllClear
     }
 
     [CreateAssetMenu(fileName = "GameplayState", menuName = "Pyra/Variables/GameplayState")]

@@ -335,6 +335,12 @@ MonoBehaviour:
   - eventToFire: {fileID: 11400000, guid: cb00d62bec0324cb5b7b5ee3e35108fa, type: 2}
     actionName: Action
     eventInputType: 2
+  - eventToFire: {fileID: 11400000, guid: 0a55a2b2b08fb45a9b4bb39ae1a77f9a, type: 2}
+    actionName: Action
+    eventInputType: 2
+  - eventToFire: {fileID: 11400000, guid: 5958d512832b748109c4419e0412977a, type: 2}
+    actionName: Retry
+    eventInputType: 2
   _bindEnable: 1
 --- !u!4 &1614437506
 Transform:

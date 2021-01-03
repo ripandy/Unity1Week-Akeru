@@ -16,6 +16,10 @@ namespace _Contents.Gameplay.Scripts
         private void Awake()
         {
             _activeGrid.Initialize($"{_levelList[_activeLevel]}");
+            // _activeGrid.LoadFromJson("Default.json");
+            // _activeGrid.Initialize();
+            // _activeGrid.SaveToJson("10.json");
+            
             _cubeIndex.Value = _activeGrid.dropPoint;
             _levelName.Value = _activeGrid.title;
         }

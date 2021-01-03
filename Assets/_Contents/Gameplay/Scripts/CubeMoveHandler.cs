@@ -5,7 +5,6 @@ using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using DG.Tweening;
 using Pyra.EventSystem;
-using Pyra.Utilities;
 using Pyra.VariableSystem;
 using UnityEngine;
 
@@ -28,7 +27,7 @@ namespace _Contents.Gameplay.Scripts
         [SerializeField] private Transform _cubeSimulationBase;
 
         private const float MoveTreshold = 0.6f;
-        private const float AnimationDuration = 0.5f;
+        private const float AnimationDuration = 0.35f;
         private const float RollHeight = 0.25f;
         private const float RollDegree = 90f;
 
@@ -49,6 +48,9 @@ namespace _Contents.Gameplay.Scripts
             transform.position = new Vector3(grid.y, 0.5f, grid.x);
             _cubeContainer.rotation = Quaternion.identity;
             _cubeBase.rotation = Quaternion.identity;
+            
+            var token = this.GetCancellationTokenOnDestroy();
+            CheckAvailableMove(token, true).Forget();
         }
 
         private bool ShouldMove(Vector2 axis) => Mathf.Abs(axis.x) > MoveTreshold || Mathf.Abs(axis.y) > MoveTreshold;
@@ -92,13 +94,7 @@ namespace _Contents.Gameplay.Scripts
             _activeCube.onFloor = onFloor;
             _cubeIndex.Value = predictedIndex;
 
-            await UniTask.NextFrame(cancellationToken: token);
-            
-            _moveCheck.Clear();
-            _availableMove = CheckAvailableMoves(_cubeIndex.Value, _moveCheck, _cubeBase.localRotation);
-            _availableMove.Red();
-            if (_availableMove == 0 && !_activeCube.IsCompleted)
-                _gameplayState.Value = GameplayStateEnum.Lose;
+            CheckAvailableMove(token).Forget();
         }
 
         private async UniTask AnimateMove(Vector3 moveTo, Vector3 rotateTo, CancellationToken cancellationToken)
@@ -181,8 +177,6 @@ namespace _Contents.Gameplay.Scripts
 
         private int CheckAvailableMoves(int index, List<int> checkedIndex, Quaternion startingRotation)
         {
-            index.Orange("Checking move..");
-            
             var availableMove = 0;
             for (var j = -1; j <= 1; j++)
             {
@@ -195,12 +189,9 @@ namespace _Contents.Gameplay.Scripts
                         cubeGrid.y -= j; 
                         var predictedIndex = _grid.ToIndex(cubeGrid);
                         
-                        if (checkedIndex.Contains(predictedIndex))
-                        {
-                            predictedIndex.Cyan("Have been checked.. skipping..");
+                        if (checkedIndex.Contains(predictedIndex) || predictedIndex < 0 || predictedIndex >= _grid.Count)
                             continue;
-                        }
-                        
+
                         var distance = Vector3.zero;
                             distance.x = i;
                             distance.z = j;
@@ -224,15 +215,27 @@ namespace _Contents.Gameplay.Scripts
                         checkedIndex.Add(index);
 
                         if (_grid[predictedIndex] == GridState.Fresh)
-                        {
-                            predictedIndex.Cyan($"Attempting recursive check.. Current available move: {availableMove}");
-                            availableMove += CheckAvailableMoves(predictedIndex, checkedIndex, _cubeSimulationBase.localRotation);
-                        }
+                            availableMove += CheckAvailableMoves(predictedIndex, checkedIndex,
+                                _cubeSimulationBase.localRotation);
                     }
                 }
             }
 
             return availableMove;
+        }
+
+        private async UniTaskVoid CheckAvailableMove(CancellationToken token, bool firstCheck = false)
+        {
+            await UniTask.NextFrame(cancellationToken: token);
+            
+            _moveCheck.Clear();
+            _availableMove = CheckAvailableMoves(_cubeIndex.Value, _moveCheck, _cubeBase.localRotation);
+            
+            if (firstCheck)
+                await UniTask.NextFrame(cancellationToken: token);
+            
+            if (_availableMove == 0 && (!_activeCube.IsCompleted || firstCheck))
+                _gameplayState.Value = GameplayStateEnum.Lose;
         }
     }
 }

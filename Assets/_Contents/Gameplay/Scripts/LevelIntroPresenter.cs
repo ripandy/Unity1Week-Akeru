@@ -14,8 +14,10 @@ namespace _Contents.Gameplay.Scripts
     public class LevelIntroPresenter : MonoBehaviour
     {
         [SerializeField] private GameplayStateVariable _gameplayState;
+        [SerializeField] private IntVariable _activeLevel;
         [SerializeField] private GameEvent _actionEvent;
         [SerializeField] private Button _toNextLevelButton;
+        [SerializeField] private TMP_Text _levelText;
         [SerializeField] private TMP_Text _introText;
         [SerializeField] private FloatVariable _fadeDuration;
         [SerializeField] private float _duration = 2.5f;
@@ -24,6 +26,8 @@ namespace _Contents.Gameplay.Scripts
 
         private void Start()
         {
+            _levelText.text = _activeLevel.Value.ToString("- 00 -");
+            
             _cts = new CancellationTokenSource(TimeSpan.FromSeconds(_duration + _fadeDuration * 2));
             
             _toNextLevelButton.OnClickAsAsyncEnumerable()
@@ -43,15 +47,23 @@ namespace _Contents.Gameplay.Scripts
             var inOutDuration = _duration * 0.2f;
             var standbyDuration = _duration - inOutDuration * 2;
             
-            await DOTween.Sequence()
+            var tween1 = DOTween.Sequence()
+                .Append(DOTween.ToAlpha(() => _levelText.color, value => _levelText.color = value, 1, inOutDuration).From(0))
+                .AppendInterval(standbyDuration)
+                .Append(DOTween.ToAlpha(() => _levelText.color, value => _levelText.color = value, 0, inOutDuration).From(1))
+                .ToUniTask(cancellationToken: token);
+            
+            var tween2 = DOTween.Sequence()
                 .Append(DOTween.ToAlpha(() => _introText.color, value => _introText.color = value, 1, inOutDuration).From(0))
                 .AppendInterval(standbyDuration)
                 .Append(DOTween.ToAlpha(() => _introText.color, value => _introText.color = value, 0, inOutDuration).From(1))
                 .ToUniTask(cancellationToken: token);
+
+            await UniTask.WhenAll(tween1, tween2);
             
             IntroDone();
         }
-
+        
         private void IntroDone()
         {
             try

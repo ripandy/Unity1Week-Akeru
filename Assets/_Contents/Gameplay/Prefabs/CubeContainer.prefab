@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94c2f3b010814b11a16c9dfe74f74655, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameplayState: {fileID: 0}
   _grid: {fileID: 11400000, guid: 49cf40b3a2cdc4ed48a79b0a4aed127a, type: 2}
   _cubeIndex: {fileID: 11400000, guid: b9fca4c05b30547bab65a6b3691db4ba, type: 2}
   _activeCube: {fileID: 11400000, guid: 5f02c212351804e259e043556ff3a16b, type: 2}
@@ -242,6 +243,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767686483108436079, guid: 033cdc907793943fab46447ce405b084,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5811802341303531051, guid: 033cdc907793943fab46447ce405b084,
         type: 3}
