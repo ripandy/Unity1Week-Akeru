@@ -12,8 +12,9 @@ namespace Pyra.ApplicationStateManagement
         {
             var token = this.GetCancellationTokenOnDestroy();
             
-            await SceneManager.LoadSceneAsync(SceneNamesEnumCore.Statics.ToString(), LoadSceneMode.Additive).ToUniTask(cancellationToken: token);
-            await SceneManager.LoadSceneAsync(SceneNamesEnumCore.SplashScreen.ToString(), LoadSceneMode.Additive).ToUniTask(cancellationToken: token);
+            await UniTask.WhenAll(
+                SceneManager.LoadSceneAsync(SceneNamesEnumCore.Statics.ToString(), LoadSceneMode.Additive).ToUniTask(cancellationToken: token),
+                SceneManager.LoadSceneAsync(SceneNamesEnumCore.SplashScreen.ToString(), LoadSceneMode.Additive).ToUniTask(cancellationToken: token));
             
             await UniTask.NextFrame(cancellationToken: token);
 

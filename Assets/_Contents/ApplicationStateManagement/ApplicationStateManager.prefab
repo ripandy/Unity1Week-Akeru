@@ -43,7 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f78777f22994382a66ce1b4a5bacb5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _loadingProgress: {fileID: 11400000, guid: 46a7ba661ccb340a893e1810fb0f8eaf, type: 2}
+  _loadingProgress: {fileID: 11400000, guid: 9940938237511449ab637a88a2a6ebe7, type: 2}
+  _fadeDuration: {fileID: 11400000, guid: f3ecfcef01fc34660be3f54f29c9428f, type: 2}
+  _isLoading: {fileID: 11400000, guid: 45ddeae2f06ae48ec8f10bfecad40144, type: 2}
+  _shouldFade: {fileID: 11400000, guid: 2e1ad92fc2e6dc3468824a5c6af03b28, type: 2}
   _applicationState: {fileID: 11400000, guid: e8bf0f22ba219430f887682575e75599, type: 2}
   _stateConfigs:
   - {fileID: 11400000, guid: 8eafcfbdc3f814606947308c94078fa4, type: 2}

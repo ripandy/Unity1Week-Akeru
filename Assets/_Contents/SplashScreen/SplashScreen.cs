@@ -3,7 +3,7 @@ using DG.Tweening;
 using Pyra.ApplicationStateManagement;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace Pyra.LoadingScreen
 {
@@ -11,8 +11,6 @@ namespace Pyra.LoadingScreen
     {
         [SerializeField] private ApplicationStateVariable applicationState;
         [SerializeField] private TMP_Text _splashText;
-        [SerializeField] private Image _splashImage;
-        [SerializeField] private Sprite _splashSprite;
 
         private void Start() => Initialize().Forget();
 
@@ -27,6 +25,10 @@ namespace Pyra.LoadingScreen
                 .ToUniTask(cancellationToken: token);
             
             applicationState.Value = ApplicationStateEnum.MainMenu;
+
+            await UniTask.WaitUntil(() => Camera.allCamerasCount > 1, cancellationToken: token);
+
+            SceneManager.UnloadSceneAsync(SceneNamesEnumCore.SplashScreen.ToString());
         }
     }
 }
