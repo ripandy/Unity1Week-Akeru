@@ -13,6 +13,9 @@ namespace Pyra.ApplicationStateManagement
     public class ApplicationStateManager : MonoBehaviour
     {
         [SerializeField] private FloatVariable _loadingProgress;
+        [SerializeField] private FloatVariable _fadeDuration;
+        [SerializeField] private BoolVariable _isLoading;
+        [SerializeField] private BoolVariable _shouldFade;
         [SerializeField] private ApplicationStateVariable _applicationState;
         [SerializeField] private List<ApplicationStateConfig> _stateConfigs = new List<ApplicationStateConfig>();
 
@@ -36,20 +39,28 @@ namespace Pyra.ApplicationStateManagement
         private void Start()
         {
             var token = this.GetCancellationTokenOnDestroy();
-            _applicationState.ForEachAwaitWithCancellationAsync(async (value, ct) => await OnApplicationStateChanged(value, ct), token).Forget();
+            _applicationState.WithoutCurrent().SubscribeAwait(async (value, ct) => await OnApplicationStateChanged(value, ct), token);
         }
 
         private async UniTask OnApplicationStateChanged(ApplicationStateEnum newApplicationState, CancellationToken token)
         {
+            if (_isLoading) return;
+
             // necessary to let _applicationState value to be correctly assigned
             await UniTask.NextFrame(cancellationToken: token);
-
-            // reset progress
+            
+            // initialize load
+            _isLoading.Value = true;
             _loadingProgress.Value = 0;
+            
+            // wait for fade
+            if (_shouldFade)
+                await UniTask.Delay(TimeSpan.FromSeconds(_fadeDuration), cancellationToken: token);
 
             // unload/load scenes
             await UnloadPreviousState(token);
             await LoadCurrentState(token);
+            SetActiveScene();
 
             await UniTask.NextFrame(cancellationToken: token);
 
@@ -64,9 +75,9 @@ namespace Pyra.ApplicationStateManagement
             // wait for load buffer time
             await ProcessOffset(token);
 
-            SetActiveScene();
-
             PrevState = _cachedConfigs[newApplicationState];
+
+            _isLoading.Value = false;
         }
 
         private IList<SceneNamesEnum> FilterScenesToUnload()

@@ -19,7 +19,7 @@ namespace Pyra.ApplicationStateManagement
         GUI
     }
 
-    [CreateAssetMenu(fileName = "NewApplicationStateConfig", menuName = "ScriptableObjects/ApplicationStateConfig", order = 10)]
+    [CreateAssetMenu(fileName = "NewApplicationStateConfig", menuName = "Pyra/Config/ApplicationStateConfig")]
     public class ApplicationStateConfig : ScriptableObject
     {
         public ApplicationStateEnum applicationState;
