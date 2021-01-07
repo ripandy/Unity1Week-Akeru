@@ -22,11 +22,11 @@ namespace _Contents.Gameplay.Scripts
             if (_activeGrid.Completed)
             {
                 _gameplayState.Value = _activeLevel == _levelList.Count - 1 ? GameplayStateEnum.AllClear : GameplayStateEnum.Win;
+                if (_activeLevel == _levelList.Count - 1)
+                    _activeLevel.Value = 0;
                 return;
             }
 
-            // TODO: check lose condition
-            
             _gameplayState.Value = GameplayStateEnum.Drop;
         }
     }

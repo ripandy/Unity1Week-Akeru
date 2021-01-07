@@ -13,17 +13,18 @@ MonoBehaviour:
   m_Name: LevelList
   m_EditorClassIdentifier: 
   _values:
-  - 00
-  - 01
-  - 02
-  - 03
-  - 04
-  - 05
-  - 06
-  - 07
-  - 08
-  - 09
-  - 10
-  - 11
-  - 12
+  - tutorial
+  - almost-straight
+  - side-by-side
+  - hashtag
+  - key-skull
+  - up-to-u
+  - the-button
+  - the-third
+  - order-of-chaos
+  - mirrored
+  - anchored
+  - that-way
+  - invade-spacers
+  - all-nets
   _keep: 1

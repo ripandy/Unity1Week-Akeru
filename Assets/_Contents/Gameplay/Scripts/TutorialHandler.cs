@@ -25,39 +25,41 @@ namespace _Contents.Gameplay.Scripts
         private int _helpState; // 0 = hidden, 1 = animate, 2 = shown
         private bool _cancelHelpFlag;
 
+        private float _elapsedTime;
+
         private void Start()
         {
             HideHelp();
             
             var token = this.GetCancellationTokenOnDestroy();
 
-            if (_activeLevel == 0)
+            _gameplayState.Where(_ => _activeLevel == 0).SubscribeAwait(ShowTutorial, token);
+            
+            _cancelHelpEvents.SubscribeToAny(() =>
             {
-                _gameplayState.SubscribeAwait(ShowTutorial, token);
-            }
-            else
-            {
-                StandbyShowHelp(token).Forget();
-                _cancelHelpEvents.SubscribeToAny(() => _cancelHelpFlag = true, token);
-            }
+                _elapsedTime = 0f;
+                ShowHelpAsync(false, token).Forget();
+            }, token);
+
+            UniTaskAsyncEnumerable.EveryUpdate()
+                .Subscribe(_ => StandbyShowHelp(token));
         }
 
-        private async UniTaskVoid StandbyShowHelp(CancellationToken destroyToken)
+        private void StandbyShowHelp(CancellationToken token)
         {
-            while (!destroyToken.IsCancellationRequested)
+            if (_activeLevel.Value <= 0 ||
+                _gameplayState.Value != GameplayStateEnum.Drop &&
+                _gameplayState.Value != GameplayStateEnum.Fill)
+                return;
+            
+            if (_elapsedTime < _helpIdleTime)
             {
-                await UniTask.WaitUntil(() =>
-                    _gameplayState.Value == GameplayStateEnum.Drop || _gameplayState.Value == GameplayStateEnum.Fill, cancellationToken: destroyToken);
-                
-                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_helpIdleTime)))
-                {
-                    await UniTask.WaitUntil(() => _cancelHelpFlag, cancellationToken: cts.Token)
-                        .SuppressCancellationThrow();
-
-                    ShowHelpAsync(!_cancelHelpFlag, destroyToken).SuppressCancellationThrow();
-                    _cancelHelpFlag = false;
-                }
+                _elapsedTime += Time.deltaTime;
+                return;
             }
+
+            ShowHelpAsync(true, token).Forget();
+        
         }
 
         private void ShowHelp(bool show)
